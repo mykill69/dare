@@ -4,7 +4,7 @@
 	<!-- Main content -->
 	<section class="content">
 		<div class="container-fluid">
-			<h2 class="text-center text-xlg" style="font-family: Helvetica;">Welcome to CPSU - RIMS! <br>Feel free to search for your research references.</h2>
+			<h2 class="text-center text-xlg" style="font-family: Helvetica;">Welcome to CPSU - DARE!</h2>
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
 					<form action="{{ route('searchGuest') }}" method="GET">

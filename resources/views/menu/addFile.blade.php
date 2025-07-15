@@ -1,4 +1,4 @@
-<div class="card">
+
     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-plus"></i> Add New
     </button>
@@ -8,8 +8,8 @@
         <button class="dropdown-item btn btn-default" data-toggle="modal" data-target="#modal-user">Add User</button>
     </div>
 
-</div>
-<div class="card card-success card-outline p-1">
+
+{{-- <div class="card card-success card-outline p-1">
 	<ul class="nav nav-pills nav-sidebar nav-compact flex-column">
 		<li class="nav-item mb-2">
 			<a href="{{ route('folders') }}" class="nav-link text-lg  {{ request()->routeIs('folders') ? 'active bg-success' : '' }}" style="text-decoration:none;color: black;">
@@ -27,7 +27,7 @@
 			</a>
 		</li>
 	</ul>
-</div>
+</div> --}}
 
 @include('modal/addFolder')
 @include('modal/addUser')

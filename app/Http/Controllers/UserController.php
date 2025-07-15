@@ -60,14 +60,15 @@ class UserController extends Controller
 
 public function userEdit($id)
 {
-    $user = User::find($id); // Find the user by ID
+  $editUser = User::where('id', $id)->first();
     $offices = Office::all();
-    $office = $user->department;
-    if ($user) {
-        return view('users.editUser', compact('user','offices', 'office')); // Pass the user data to the edit view
+    $users = User::all(); // To repopulate user list in the table
+
+    if (!$editUser) {
+        return redirect()->back()->with('error', 'User not found');
     }
 
-    return redirect()->back()->with('error', 'User not found');
+    return view('users.user', compact('editUser', 'offices', 'users'));
 }
 
 public function userUpdate(Request $request, $id)

@@ -26,8 +26,8 @@
             {{-- <nav class="main-header navbar navbar-expand-md navbar-light" style="background-color: #1F5036;"> --}}
                 <div class="main-header navbar navbar-expand-md navbar-light container-fluid" style="background-color: #1F5036;">
                     <a href="{{ route('index') }}" class="mt-2">
-                        <img src="{{ asset('template/img/CPSU_L.png') }}" alt="AdminLTE Logo" class="brand-image img-circle" style="box-shadow: 0 0 4px white;width: 7%;">&nbsp;
-                        <span class="brand-text text-light text-bold"> Research Information Management System</span>
+                        <img src="{{ asset('template/img/CPSU_L.png') }}" alt="AdminLTE Logo" class="brand-image img-circle" style="box-shadow: 0 0 4px white;width: 2%;">&nbsp;
+                        <span class="brand-text text-light text-bold"> Digital Archive for Research and Explore</span>
                     </a>
                     <!-- Right navbar links -->
                     {{-- <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
@@ -50,7 +50,13 @@
                             <a href="#" class="nav-link" style="color: black;">Studies</a>
                         </li>
                         <li class="nav-item d-none d-sm-inline-block">
-                            <a href="{{ route('folders') }}" class="nav-link" style="color: black;">Folders</a>
+                            <a href="{{ route('folders') }}" class="nav-link {{ request()->routeIs('folders') ? 'active text-success' : '' }}" style="color: black;">Folders</a>
+                        </li>
+                        <li class="nav-item d-none d-sm-inline-block">
+                            <a href="{{ route('userView') }}" class="nav-link {{ request()->routeIs('userView') ? 'active text-success' : '' }}" style="color: black;">Users</a>
+                        </li>
+                        <li class="nav-item d-none d-sm-inline-block">
+                            <a href="#" class="nav-link" style="color: black;">Logs</a>
                         </li>
                     </ul>
                     <!-- Right-aligned section -->

@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>CPSU RIMS | Log in</title>
+    <title>CPSU DARE | Log in</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -86,7 +86,7 @@
                             <a href="">
                                 <img src="{{ asset('template/img/CPSU_L.png') }}" class="img-circle" width="103px" height="100px">
                             </a>
-                            <h1 style="font-family: Roboto;">CPSU RIMS</h1>
+                            <h1 style="font-family: Roboto;">CPSU DARE</h1>
                         </div>
 
                         <p class="login-box-msg">Sign in to start your session</p>

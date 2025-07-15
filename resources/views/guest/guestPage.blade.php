@@ -26,8 +26,8 @@
             {{-- <nav class="main-header navbar navbar-expand-md navbar-light" style="background-color: #1F5036;"> --}}
                 <div class="main-header navbar navbar-expand-md navbar-light container-fluid" style="background-color: #1F5036;">
                     <a href="{{ route('index') }}" class="mt-2">
-                        <img src="{{ asset('template/img/CPSU_L.png') }}" alt="AdminLTE Logo" class="brand-image img-circle" style="box-shadow: 0 0 4px white;width: 7%;">&nbsp;
-                        <span class="brand-text text-light text-bold"> Research Information Management System</span>
+                        <img src="{{ asset('template/img/CPSU_L.png') }}" alt="AdminLTE Logo" class="brand-image img-circle" style="box-shadow: 0 0 4px white;width: 2%;">&nbsp;
+                        <span class="brand-text text-light text-bold"> Digital Archive for Research and Explore</span>
                     </a>
                     <!-- Right navbar links -->
                     {{-- <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
@@ -37,9 +37,9 @@
                             </a>
                         </li>
                     </ul>--}}
-                    <a href="{{ route('getLogin') }}" class="ml-auto">
+                    {{-- <a href="{{ route('getLogin') }}" class="ml-auto">
                         <button class="btn text-white text-sm"><i class="fas fa-user-circle text-white"></i> Sign In</button>
-                    </a>
+                    </a> --}}
                 </div>
                 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                     <ul class="navbar-nav">
