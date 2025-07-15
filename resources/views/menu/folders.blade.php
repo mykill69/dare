@@ -65,10 +65,11 @@
                     <div class="card-header bg-white">
                         <div class="row w-100 align-items-center">
                             <div class="col-md-11">
-                                <h5 class="mb-0 font-weight-bold">My Folders</h5>
+                                <h5 class="mb-0 font-weight-bold">All Folders</h5>
                             </div>
                             <div class="col-md-1 text-right">
-                                @include('menu/addFile')
+                                <button class="dropdown-item btn bg-success" data-toggle="modal" data-target="#modal-sm"><i
+                                        class="fas fa-plus"></i> Create Folder</button>
                             </div>
                         </div>
                     </div>
@@ -80,19 +81,16 @@
                                     style="text-decoration: none;">
                                     <div class="folder">
                                         <!-- Badge -->
-                                        <span class="badge badge-counter">
-                                            {{ $folder->documents_count }}
-                                        </span>
+                                        <span class="badge badge-counter">{{ $folder->documents_count }}</span>
 
-                                        <!-- Folder Image -->
-                                        <img src="https://img.icons8.com/fluency/96/folder-invoices.png" alt="Folder">
+                                        <!-- Folder Link: Only image and name -->
+                                        <a href="{{ route('documentView', ['folderId' => $folder->id]) }}"
+                                            style="text-decoration: none; color: inherit;">
+                                            <img src="https://img.icons8.com/fluency/96/folder-invoices.png" alt="Folder">
+                                            <div class="folder-name">{{ $folder->folder_name }}</div>
+                                        </a>
 
-                                        <!-- Folder Name -->
-                                        <div class="folder-name">
-                                            {{ $folder->folder_name }}
-                                        </div>
-
-                                        <!-- Dropdown -->
+                                        <!-- Dropdown outside of <a> -->
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-link p-0" type="button"
                                                 id="dropdownMenu{{ $folder->id }}" data-toggle="dropdown"
@@ -113,6 +111,7 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </a>
                             @endforeach
                         </div>
@@ -123,7 +122,7 @@
     </div>
 
     @include('modal/renameFolder')
-
+    @include('modal/addFolder')
     <script>
         function openRenameModal(folderId, folderName) {
             const form = document.getElementById('renameForm');

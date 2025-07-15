@@ -29,5 +29,5 @@
 	</ul>
 </div> --}}
 
-@include('modal/addFolder')
+
 @include('modal/addUser')

@@ -10,22 +10,19 @@ use App\Models\Office;
 class GuestController extends Controller
 {
     public function indexGuest(Request $request)
-    {
-        $searchResults = [];
+{
+    $query = $request->input('query');
 
-        // If a search query exists, perform the search
-        if ($request->has('query')) {
-            $searchQuery = $request->input('query');
-            
-         // Assuming you are searching in the documents table
-    $searchResults = Document::where('file_name', 'like', "%{$query}%")
-        ->with('folder') // Eager load the related folder
-        ->get();
-        }
+    $searchResults = Document::with('folder');
 
-        // Return the view with the search results (if any)
-        return view('guest.indexGuest', compact('searchResults'));
+    if ($query) {
+        $searchResults = $searchResults->where('file_name', 'like', "%{$query}%");
     }
+
+    $searchResults = $searchResults->get();
+
+    return view('guest.indexGuest', compact('searchResults'));
+}
 
     public function searchGuest(Request $request)
     {
