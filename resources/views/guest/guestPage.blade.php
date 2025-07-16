@@ -25,7 +25,7 @@
 
 <body class="hold-transition sidebar-collapse layout-footer-fixed">
     <div class="wrapper">
-        <nav class="navbar navbar-expand-md navbar-light" style="background-color: #1F5036;">
+        <nav class="navbar navbar-expand-md navbar-light" style="background-color:  rgba(255, 255, 255, 0.4);">
             <div class="container-fluid d-flex justify-content-between align-items-center">
 
                 <!-- Left Side: Logo and Title -->
@@ -44,6 +44,9 @@
                     </li>
                     <li class="nav-item d-none d-sm-inline-block">
                         <a href="#" class="nav-link text-light">Studies</a>
+                    </li>
+                    <li class="nav-item d-none d-sm-inline-block">
+                        <a href="#" class="nav-link text-light">About</a>
                     </li>
                     {{-- Add more nav items here if needed --}}
                 </ul>
