@@ -17,13 +17,13 @@
                         <input type="text" class="form-control" name="folder_name" placeholder="Folder Name" required>
                     </div>
 
-                    <div class="input-group mb-3">
+                    {{-- <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-list-alt"></i></span>
                         </div>
                         <input type="text" class="form-control" name="folder_category" placeholder="Category" required>
                         <input type="hidden" class="form-control" name="user_access" value="All">
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

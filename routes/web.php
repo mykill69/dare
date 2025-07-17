@@ -33,7 +33,9 @@ Route::post('/login', [LoginAuthController::class, 'postLogin'])->name('postLogi
 
 Route::get('/index', [GuestController::class, 'indexGuest'])->name('indexGuest');
 Route::get('/searchGuest', [GuestController::class, 'searchGuest'])->name('searchGuest');
-Route::get('/guest/viewPdf/{id}', [GuestController::class, 'viewPdfGuest'])->name('viewPdfGuest');
+Route::get('/guest/viewPdf/{file_name}', [GuestController::class, 'viewPdfGuest'])->name('viewPdfGuest');
+Route::get('/guest/downloadPdf/{file_name}', [GuestController::class, 'downloadPdfGuest'])->name('downloadPdfGuest');
+
 
 });
 
@@ -51,12 +53,14 @@ Route::get('/search', [DocumentsController::class, 'search'])->name('search');
 Route::post('/storeFolder', [FoldersController::class, 'storeFolder'])->name('folders.storeFolder');
 Route::get('/folders', [FoldersController::class, 'showFolders'])->name('folders');
 Route::post('/folders/{id}/rename', [FoldersController::class, 'rename'])->name('folders.rename');
+Route::delete('/folders/{id}', [FoldersController::class, 'destroyFolder'])->name('destroyFolder');
 
 //documents
 Route::get('/folders/{folderId}', [DocumentsController::class, 'documentView'])->name('documentView');
 Route::post('/storeFile', [DocumentsController::class, 'storeFile'])->name('storeFile');
-Route::get('/documents/view/{id}', [DocumentsController::class, 'viewPdf'])->name('viewPdf');
-Route::delete('/document/{id}', [DocumentsController::class, 'destroy'])->name('document.destroy');
+Route::get('/documents/view/{file_name}', [DocumentsController::class, 'viewPdf'])->name('viewPdf');
+
+Route::delete('/document/{id}', [DocumentsController::class, 'destroy'])->name('destroy');
 
 //users
 Route::get('/users', [UserController::class, 'userView'])->name('userView');

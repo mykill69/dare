@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CPSU | RIMS</title>
+    <title>CPSU | DARE</title>
     <link rel="stylesheet" href="{{ asset('template/plugins/toastr/toastr.min.css') }}">
     <!-- SweetAlert2 -->
     <!-- Font Awesome -->
@@ -23,15 +23,26 @@
     <link rel="shortcut icon" type="" href="{{ asset('template/img/CPSU_L.png') }}">
 </head>
 
+<style>
+    .small-footer {
+    padding: 5px 10px !important;
+    font-size: 13px;
+    background-color: #f9f9f9; /* optional: lighten the footer */
+    color: #555;
+}
+</style>
+
 <body class="hold-transition sidebar-collapse layout-footer-fixed">
     <div class="wrapper">
-        <nav class="navbar navbar-expand-md navbar-light" style="background-color:  rgba(255, 255, 255, 0.4);">
+        <nav class="navbar navbar-expand-md navbar-light" style="background-color:  rgba(255, 255, 255, 0.2);">
             <div class="container-fluid d-flex justify-content-between align-items-center">
 
                 <!-- Left Side: Logo and Title -->
                 <a href="{{ route('index') }}" class="d-flex align-items-center">
                     <img src="{{ asset('template/img/CPSU_L.png') }}" alt="CPSU Logo" class="img-circle mr-2"
                         style="box-shadow: 0 0 4px white; width: 40px; height: 40px;">
+                        <img src="{{ asset('template/img/bagong-pilipinas.png') }}" alt="CPSU Logo" class="img-circle mr-2"
+                        style="width: 50px; height: 50px;">
                     <span class="text-light font-weight-bold h6 mb-0">
                         Digital Archive for Research and Exploration
                     </span>
@@ -43,7 +54,7 @@
                         <a href="{{ route('indexGuest') }}" class="nav-link text-light">Home</a>
                     </li>
                     <li class="nav-item d-none d-sm-inline-block">
-                        <a href="#" class="nav-link text-light">Studies</a>
+                        <a href="#" class="nav-link text-light">Catalog</a>
                     </li>
                     <li class="nav-item d-none d-sm-inline-block">
                         <a href="#" class="nav-link text-light">About</a>
@@ -58,9 +69,9 @@
             @yield('body') <!-- This will display the content from index.blade.php -->
         </div>
         <!-- Main footer -->
-        <footer class="main-footer">
-            <strong>Maintained and Managed by MIS.</strong> All rights reserved.
-        </footer>
+        <footer class="main-footer small-footer">
+    <strong>Maintained and Managed by MIS.</strong> All rights reserved.
+</footer>
         <aside class="control-sidebar control-sidebar-dark">
         </aside>
     </div>

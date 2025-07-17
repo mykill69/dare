@@ -21,6 +21,7 @@ class Document extends Model
         'file_category',
         'researcher',
         'created_at',
+        'download_count',
     ];
 
     // If your table does not have timestamps (created_at, updated_at), you can disable them

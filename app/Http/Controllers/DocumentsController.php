@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-use App\Models\Folder; // Assuming your folder model is named DocFolder
+use App\Models\Folder; 
 use App\Models\Document;
 use App\Models\Office;
 
@@ -19,7 +19,7 @@ class DocumentsController extends Controller
         if ($request->has('query')) {
             $searchQuery = $request->input('query');
             
-            $searchResults = Document::where('file_name', 'like', "%{$query}%")
+            $searchResults = Document::whereRaw('LOWER(file_name) LIKE ?', ['%' . strtolower($searchQuery) . '%'])  
         ->with('folder') // Eager load the related folder
         ->get();
         }
@@ -49,31 +49,37 @@ class DocumentsController extends Controller
 
     return view('menu.documentView', compact('folder', 'documents','offices'));
 }
+
+
 public function storeFile(Request $request)
 {
-    // Validate the request data
     $request->validate([
-        'file_name' => 'required|file|mimes:pdf',  // Ensure the file is a PDF and the size is <= 2MB
-        'folder_id' => 'required|integer',  // Ensure the folder_id is provided
+        'file_name' => 'required|file|mimes:pdf',
+        'folder_id' => 'required|integer',
         'researcher' => 'required|string|max:255',
-        'file_category' => 'required|string|max:255',
+        'file_category' => 'nullable|string|max:255',
     ]);
 
-    // Check if a file is uploaded
     if ($request->hasFile('file_name')) {
-        // Store the file
-        $file = $request->file('file_name');
-        $file_name = $file->getClientOriginalName();  // Add a timestamp to the file name
-        $filePath = $file->storeAs('documents', $file_name, 'public');  // Store in the 'public/documents' folder
+        // Get folder info
+        $folder = Folder::findOrFail($request->folder_id);
+        $folderName = $folder->folder_name; // Use original folder name with spaces
 
-        // Save the document details in the 'documents' table
+        $file = $request->file('file_name');
+        $originalName = $file->getClientOriginalName();
+        $fileName = $originalName;
+
+        // Store inside 'folders/{folderName}/'
+        $filePath = $file->storeAs("folders/{$folderName}", $fileName);
+
+        // Save to DB
         $document = new Document();
-        $document->file_name = $file_name;
-        $document->folder_id = $request->folder_id;  // Store folder ID
-        $document->file_path = $filePath;  // Save the file path
+        $document->file_name = $fileName;
+        $document->folder_id = $request->folder_id;
+        $document->file_path = $filePath;
         $document->file_category = $request->file_category;
         $document->researcher = $request->researcher;
-        $document->user_id = auth()->user()->id;  // Assuming the user is authenticated
+        $document->user_id = auth()->user()->id;
         $document->save();
 
         return redirect()->back()->with('success', 'File uploaded and saved successfully.');
@@ -82,42 +88,44 @@ public function storeFile(Request $request)
     return redirect()->back()->with('error', 'File upload failed.');
 }
 
-public function viewPdf($id)
-{
-    // Retrieve the document by its ID
-    $document = Document::find($id);
 
-    // Check if the document exists
+public function viewPdf($file_name)
+{
+    $decodedFileName = urldecode($file_name);
+
+    // Find the document based on the exact file_name (case-insensitive for safety)
+    $document = Document::where('file_name', $decodedFileName)->first();
+
     if (!$document) {
         return redirect()->back()->with('error', 'Document not found.');
     }
 
-    // Build the full file path
-    $filePath = storage_path('app/public/' . $document->file_path);
+    $filePath = storage_path('app/' . $document->file_path);
 
-    // Check if the file exists on the server
     if (!file_exists($filePath)) {
-        return redirect()->back()->with('error', 'File not found.');
+        return redirect()->back()->with('error', 'File not found on server.');
     }
 
-    // Return the PDF file for inline viewing in the browser
     return response()->file($filePath);
 }
+
+
+
+
 
 public function destroy($id)
 {
     // Retrieve the document by ID
     $document = Document::find($id);
 
-    // Check if the document exists
     if (!$document) {
         return redirect()->back()->with('error', 'Document not found.');
     }
 
-    // Build the full file path
-    $filePath = 'public/' . $document->file_path;  // Ensure 'file_path' contains the relative path like 'documents/file.pdf'
+    // Use the exact path from database (e.g., 'folders/FolderName/file.pdf')
+    $filePath = $document->file_path;
 
-    // Delete the file from the storage folder
+    // Delete the file from storage
     if (Storage::exists($filePath)) {
         Storage::delete($filePath);
     }
@@ -128,5 +136,5 @@ public function destroy($id)
     return redirect()->back()->with('success', 'Document deleted successfully.');
 }
 
-}
 
+}

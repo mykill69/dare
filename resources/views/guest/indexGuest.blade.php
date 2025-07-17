@@ -1,6 +1,12 @@
 @extends('guest.guestPage')
 @section('body')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
+        h1 span {
+            font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif;
+            letter-spacing: 1px;
+        }
+
         /* Dimmed and blurred background behind content */
         body::before {
             content: "";
@@ -9,21 +15,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('{{ asset('template/img/sample_bg2.jpg') }}');
+            background-image: url('{{ asset('template/img/kalaw1.jpg') }}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            filter: brightness(0.8) blur(3px);
+
             /* softer, less dark, with blur */
             z-index: -1;
         }
 
         /* Main content wrapper styling */
         .content-wrapper {
-            background-color: rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.2);
             /* light transparency */
-            backdrop-filter: blur(3px);
+
             /* adds modern glass effect */
             -webkit-backdrop-filter: blur(3px);
             /* Safari support */
@@ -57,8 +63,8 @@
         }
 
         .table thead th {
-            background-color: #1f5036;
-            color: white;
+            /* background-color: #1f5036; */
+
             text-align: center;
         }
 
@@ -88,20 +94,52 @@
             color: #999;
             font-style: italic;
         }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-hover img {
+            transition: transform 0.3s ease;
+        }
+
+        .card-hover:hover img {
+            transform: scale(1.05);
+        }
     </style>
-    <div class="content pt-4">
+    <div class="content">
 
 
         <div class="container-fluid">
             <!-- Header -->
             <div class="text-center mb-4">
-                <h2 class="highlighted-title">Welcome to CPSU - DARE</h2>
-                <p class="lead text-white" style="font-style: italic;">“Dare to Search. Dare to Succeed”</p>
+
+                <!-- Title with animation -->
+                <h1 class="animate__animated animate__fadeInDown"
+                    style="font-size: 3rem; font-weight: 700; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">
+                    Welcome to <span class="text-warning" style="text-shadow: 2px 1px 1px black;">CPSU – DARE</span>
+                </h1>
+
+                <!-- Subtitle with animation -->
+                <p class="lead text-white mt-2 animate__animated animate__fadeInUp"
+                    style="font-size: 1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                    “Dare to Search. Dare to Succeed”
+                </p>
+
+                <!-- Accent line (no animation) -->
+                <div class="bg-warning" style="width: 80px; height: 4px; margin: 20px auto 0; border-radius: 10px;">
+                </div>
             </div>
+
 
             <!-- Search Box -->
             <div class="row justify-content-center mb-4">
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <form action="{{ route('indexGuest') }}" method="GET">
                         <div class="input-group search-bar">
                             <input type="text" name="query" class="form-control"
@@ -118,10 +156,10 @@
 
             <!-- Results Table -->
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <div class="card card-outline card-success shadow-sm">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 font-weight-bold text-success">Research Studies</h5>
+
                             @if (request('query'))
                                 <span class="badge badge-light text-dark">
                                     Showing results for: <strong>{{ request('query') }}</strong>
@@ -130,13 +168,14 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="example2" class="table table-hover table-sm text-center">
-                                    <thead class="thead-light">
+                                <table id="example2" class="table table-hover">
+                                    <thead>
                                         <tr>
-                                            <th>Research Title</th>
-                                            <th>Researchers</th>
-                                            <th>Category</th>
-                                            <th>Date Submitted</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Authors</th>
+                                            <th>Date</th>
+                                            <th>Action</th> {{-- This is your new column --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -144,7 +183,8 @@
                                             <tr>
                                                 <td>
                                                     <i class="fas fa-file-pdf text-danger mr-1"></i>
-                                                    <a href="{{ route('viewPdfGuest', $result->id) }}" target="_blank">
+                                                    <a href="{{ route('viewPdfGuest', ['file_name' => urlencode($result->file_name)]) }}"
+                                                        target="_blank">
                                                         {{ pathinfo($result->file_name, PATHINFO_FILENAME) }}
                                                     </a>
                                                 </td>
@@ -153,13 +193,38 @@
                                                     {{ optional($result->user)->lname ?? '' }}
                                                 </td>
                                                 <td>{{ $result->file_category ?? 'Uncategorized' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}
+                                                <td>{{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}</td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle"
+                                                            type="button" id="actionDropdown{{ $result->id }}"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
+
+                                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                            aria-labelledby="actionDropdown{{ $result->id }}">
+
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('viewPdfGuest', ['file_name' => urlencode($result->file_name)]) }}"
+                                                                target="_blank" style="text-decoration: none;">
+                                                                <i class="fas fa-eye text-info mr-2"></i> View
+                                                            </a>
+
+                                                            <a class="dropdown-item" href="{{ route('downloadPdfGuest', ['file_name' => urlencode($result->file_name)]) }}" style="text-decoration: none;">
+                                                                <i class="fas fa-download text-success mr-2"></i> Download
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </td>
+
+
+
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center text-muted">No research found.
-                                                </td>
+                                                <td colspan="5">No results found.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -171,59 +236,75 @@
             </div>
 
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="row align-items-stretch mt-2">
-                        <!-- Card 1 -->
-                        <div class="col-md-3 mb-3">
-                            <div class="card shadow-md text-center h-100">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <img src="{{ asset('img/research.png') }}" alt="Research Icon" width="50"
-                                        class="mb-3 mx-auto">
-                                    <h5 class="card-title font-weight-bold">Amplify Your Research</h5>
-                                    <p class="card-text text-muted">Make your studies visible and impactful.</p>
-                                </div>
+                <div class="col-md-10">
+                    <div class="row align-items-stretch mt-2 g-3">
+                        @php $cardImage = asset('template/img/sample_bg.jpg'); @endphp
+
+                        <!-- Card 1 - Background Image Overlay -->
+                        <div class="col-md-3">
+                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                style="min-height: 320px;">
+                                <img src="{{ $cardImage }}" class="card-img h-100"
+                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                <a href="#" target="_blank">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                        <h5 class="card-title text-warning">Featured Research</h5>
+                                        <p class="card-text text-white pb-2 pt-1">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
+                                        </p>
+                                        <a href="#" class="text-white">Last update 2 mins ago</a>
+                                    </div>
+                                </a>
                             </div>
                         </div>
 
                         <!-- Card 2 -->
-                        <div class="col-md-3 mb-3">
-                            <div class="card shadow-md text-center h-100">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <img src="{{ asset('img/folder.png') }}" alt="Research Count" width="50"
-                                        class="mb-3 mx-auto">
-                                    <h5 class="card-title font-weight-bold">Number of Research</h5>
-                                    <p class="card-text display-4">{{ $researchCount ?? 0 }}</p>
+                        <div class="col-md-3">
+                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                style="min-height: 320px;">
+                                <img src="{{ asset('template/img/digital_book2.jpg') }}" class="card-img h-100"
+                                    style="object-fit: cover; filter: brightness(0.7);" alt="Research Count">
+                                <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
+                                    <h5 class="fw-bold text-warning">Total Number of Research</h5>
+                                    <p class="display-4 mb-0">{{ $docCount ?? 0 }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card 3 -->
-                        <div class="col-md-3 mb-3">
-                            <div class="card shadow-md text-center h-100">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <img src="{{ asset('img/download.png') }}" alt="Download Icon" width="50"
-                                        class="mb-3 mx-auto">
-                                    <h5 class="card-title font-weight-bold">Number of Downloads</h5>
-                                    <p class="card-text display-4">{{ $downloadCount ?? 0 }}</p>
+                        <div class="col-md-3">
+                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                style="min-height: 320px;">
+                                <img src="{{ asset('template/img/download_number.jpg') }}" class="card-img h-100"
+                                    style="object-fit: cover; filter: brightness(0.7);" alt="Download Icon">
+                                <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
+                                    <h5 class="fw-bold text-warning">Total Number of Downloads</h5>
+                                   <p class="display-4 mb-0">{{ $totalDownloads }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card 4 -->
-                        <div class="col-md-3 mb-3">
-                            <div class="card shadow-md text-center h-100">
-                                <div class="card-body d-flex flex-column justify-content-center">
-                                    <img src="{{ asset('img/faq.png') }}" alt="FAQ Icon" width="50"
-                                        class="mb-3 mx-auto">
-                                    <h5 class="card-title font-weight-bold">FAQs</h5>
-                                    <p class="card-text text-muted">Need help? Find answers to common questions.</p>
-                                    <a href="#" class="btn btn-sm btn-outline-success mt-auto">View FAQs</a>
-                                </div>
+                        <div class="col-md-3">
+                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                style="min-height: 320px;">
+                                <img src="{{ asset('template/img/faqs.jpg') }}" class="card-img h-100"
+                                    style="object-fit: cover; filter: brightness(0.9);" alt="FAQ Icon">
+                                <a href="#" target="_blank">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
+                                        {{-- <h5 class="fw-bold"></h5>
+                                    <p class="small mb-3"></p>
+                                    <a href="#" class="btn btn-sm btn-outline-light">View FAQs</a> --}}
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
+
 
 
 

@@ -68,9 +68,12 @@
                                 <h5 class="mb-0 font-weight-bold">All Folders</h5>
                             </div>
                             <div class="col-md-1 text-right">
-                                <button class="dropdown-item btn bg-success" data-toggle="modal" data-target="#modal-sm"><i
-                                        class="fas fa-plus"></i> Create Folder</button>
+                                <button type="button" class="btn btn-success btn-sm w-100" data-toggle="modal"
+                                    data-target="#modal-sm">
+                                    <i class="fas fa-plus mr-1"></i> Folder
+                                </button>
                             </div>
+
                         </div>
                     </div>
 
@@ -104,8 +107,9 @@
                                                     onclick="openRenameModal({{ $folder->id }}, '{{ $folder->folder_name }}')">
                                                     <i class="fas fa-edit text-primary mr-2"></i> Rename
                                                 </a>
-                                                <a class="dropdown-item text-danger" href="#"
-                                                    onclick="deleteFolder({{ $folder->id }})">
+                                                <a class="dropdown-item text-danger"
+                                                    href="{{ route('destroyFolder', $folder->id) }}"
+                                                    onclick="event.preventDefault(); confirmDelete({{ $folder->id }});">
                                                     <i class="fas fa-trash-alt mr-2"></i> Delete
                                                 </a>
                                             </div>
@@ -123,6 +127,47 @@
 
     @include('modal/renameFolder')
     @include('modal/addFolder')
+
+
+
+    <script>
+        function confirmDelete(folderId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the folder and its contents.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create a form for DELETE request
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('destroyFolder', ':id') }}'.replace(':id', folderId);
+
+                    const csrf = document.createElement('input');
+                    csrf.type = 'hidden';
+                    csrf.name = '_token';
+                    csrf.value = '{{ csrf_token() }}';
+
+                    const method = document.createElement('input');
+                    method.type = 'hidden';
+                    method.name = '_method';
+                    method.value = 'DELETE';
+
+                    form.appendChild(csrf);
+                    form.appendChild(method);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
+
+
+
     <script>
         function openRenameModal(folderId, folderName) {
             const form = document.getElementById('renameForm');

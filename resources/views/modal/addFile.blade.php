@@ -33,12 +33,12 @@
                         <input type="file" class="form-control" name="file_name" accept=".pdf" required>
                         <input type="hidden" name="folder_id" value="{{ $folder->id }}">
                     </div>
-                    <div class="input-group mb-3">
+                    {{-- <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-list-alt"></i></span>
                         </div>
                         <input type="text" class="form-control" name="file_category" placeholder="Category" required>
-                    </div>
+                    </div> --}}
                 </div>
                 
                 <div class="modal-footer">
