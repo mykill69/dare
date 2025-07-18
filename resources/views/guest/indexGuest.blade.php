@@ -187,7 +187,7 @@
                                                     $avgRating = round($result->ratings->avg('rating'), 1);
                                                 @endphp
 
-                                                <td>
+                                                <td style="text-align: justify;">
                                                     <a href="{{ route('viewPdfGuest', ['file_name' => urlencode($result->file_name)]) }}"
                                                         target="_blank">
                                                         {{ pathinfo($result->file_name, PATHINFO_FILENAME) }}
@@ -217,10 +217,12 @@
 
 
                                                 <td>{{ $result->description ?? 'Uncategorized' }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     {{ $result->researcher }}
                                                 </td>
-                                                <td>{{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}</td>
+                                                <td class="text-center">
+                                                    {{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}
+                                                </td>
                                                 {{-- <td>{{ $result->view_count }}</td> --}}
                                                 <td class="text-center">
                                                     <div class="dropdown">
