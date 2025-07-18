@@ -1,6 +1,6 @@
 <div class="container mt-2">
     <div class="card">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-default text-black">
             <h5 class="mb-0">Edit User</h5>
         </div>
         <div class="card-body">

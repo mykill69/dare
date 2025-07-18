@@ -24,6 +24,19 @@
     <link rel="shortcut icon" type="" href="{{ asset('template/img/CPSU_L.png') }}">
 </head>
 
+<style>
+    .nav-link.active {
+        font-weight: bold;
+        color: #28a745 !important; /* Bootstrap success color */
+        border-bottom: 3px solid #28a745; /* green underline */
+    }
+
+    .nav-link:hover {
+        background-color: rgba(40, 167, 69, 0.1); /* light green hover effect */
+        transition: 0.3s;
+    }
+</style>
+
 <body class="hold-transition sidebar-collapse layout-footer-fixed">
     <div class="wrapper">
         <!-- Navbar -->
@@ -53,11 +66,11 @@
                     <a href="{{ route('index') }}" class="nav-link" style="color: black;">Home</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link" style="color: black;">Studies</a>
+                    <a href="#" class="nav-link" style="color: black;">Catalog</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{{ route('folders') }}"
-                        class="nav-link {{ request()->routeIs('folders') ? 'active text-success' : '' }}"
+                        class="nav-link {{ request()->routeIs('folders') || request()->routeIs('documentView') ? 'active text-success' : '' }}"
                         style="color: black;">Folders</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">

@@ -21,7 +21,7 @@ use App\Http\Controllers\GuestController;
 */
 
 Route::group(['middleware'=>['guest']],function(){
-    Route::get('/', function () {
+    Route::get('/login', function () {
         return view('.login.login');
     });
 
@@ -31,7 +31,7 @@ Route::get('/login', [LoginAuthController::class, 'getLogin'])->name('getLogin')
 Route::post('/login', [LoginAuthController::class, 'postLogin'])->name('postLogin');
 
 
-Route::get('/index', [GuestController::class, 'indexGuest'])->name('indexGuest');
+Route::get('/', [GuestController::class, 'indexGuest'])->name('indexGuest');
 Route::get('/searchGuest', [GuestController::class, 'searchGuest'])->name('searchGuest');
 Route::get('/guest/viewPdf/{file_name}', [GuestController::class, 'viewPdfGuest'])->name('viewPdfGuest');
 Route::get('/guest/downloadPdf/{file_name}', [GuestController::class, 'downloadPdfGuest'])->name('downloadPdfGuest');
@@ -43,7 +43,7 @@ Route::get('/guest/downloadPdf/{file_name}', [GuestController::class, 'downloadP
 Route::group(['middleware'=>['login_auth']],function(){
 
 //Main page
-Route::get('/', [DocumentsController::class, 'index'])->name('index');
+Route::get('/index', [DocumentsController::class, 'index'])->name('index');
 
 // search docu
 Route::get('/search', [DocumentsController::class, 'search'])->name('search');
@@ -59,7 +59,8 @@ Route::delete('/folders/{id}', [FoldersController::class, 'destroyFolder'])->nam
 Route::get('/folders/{folderId}', [DocumentsController::class, 'documentView'])->name('documentView');
 Route::post('/storeFile', [DocumentsController::class, 'storeFile'])->name('storeFile');
 Route::get('/documents/view/{file_name}', [DocumentsController::class, 'viewPdf'])->name('viewPdf');
-
+Route::get('/document/edit/{id}', [DocumentsController::class, 'editFile'])->name('editFile');
+Route::post('/document/update/{id}', [DocumentsController::class, 'updateFile'])->name('updateFile');
 Route::delete('/document/{id}', [DocumentsController::class, 'destroy'])->name('destroy');
 
 //users

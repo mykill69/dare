@@ -1,3 +1,4 @@
+<link rel="shortcut icon" type="" href="{{ asset('template/img/CPSU_L.png') }}">
 @extends('layouts.main')
 @section('body')
     <style type="text/css">
@@ -30,22 +31,56 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-2"> <!-- Include the addFile.blade.php content here -->
-                        @include('menu/addDocs') <!-- Replace with actual path -->
+                    {{-- <div class="col-md-3">
+                        <div class="container">
+                            <button class="btn bg-primary dropdown-item btn btn-default" data-toggle="modal"
+                                data-target="#modal-file">
+                                <i class="fa fa-plus"></i> Add File
+                            </button>
+
+                        </div>
+                        @include('menu.editFile', [
+                            'editDocument' => $editDocument ?? null,
+                            'folders' => $folders ?? [],
+                        ])
+                    </div> --}}
+                    <div class="col-md-3">
+                        <!-- Add User Button -->
+                        <div class="container">
+                            <button class="btn bg-success dropdown-item btn btn-default"data-toggle="modal"
+                                data-target="#modal-file">
+                                <i class="fa fa-plus"></i> Add Files
+                            </button>
+                        </div>
+                        {{-- Show edit form only if user is being edited --}}
+                        @include('menu.editFile', [
+                            'editDocument' => $editDocument ?? null,
+                            'folders' => $folders ?? [],
+                        ])
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         <div class="card card-success card-outline p-1">
                             <div class="card-body folder-grid">
-                                <!-- Folder Grid -->
+                                <!-- Folder Name Header -->
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <h5 class="text-success font-weight-bold">
+                                            <i class="fa fa-folder-open"></i>
+                                            {{ $folder->folder_name ?? 'Folder Name' }}
+                                        </h5>
+                                        <hr class="mt-1 mb-0" style="border-top: 2px solid #28a745;">
+                                    </div>
+                                </div>
+
+                                <!-- Table Section -->
                                 <div class="row">
                                     <div class="table-responsive">
                                         <table id="example1" class="table table-hover table-sm text-sm">
                                             <thead class="text-center">
                                                 <tr>
-                                                    {{-- <th>#</th> --}}
                                                     <th>TITLE</th>
+                                                    <th>DESCRIPTION</th>
                                                     <th>RESEARCHERS</th>
-                                                    <th>CATEGORY</th>
                                                     <th>DATE SUBMITTED</th>
                                                     <th>ACTION</th>
                                                 </tr>
@@ -53,25 +88,31 @@
                                             <tbody>
                                                 @foreach ($documents as $document)
                                                     <tr>
-                                                        {{--  <td>{{ $loop->iteration }}</td> --}}
-                                                        <!-- Loop through and auto increment row numbers -->
+                                                        <!-- Title with PDF icon and link -->
                                                         <td>
                                                             <i class="fas fa-file-pdf text-danger"></i>
                                                             <a href="{{ route('viewPdf', ['file_name' => urlencode($document->file_name)]) }}"
                                                                 target="_blank">
                                                                 {{ pathinfo($document->file_name, PATHINFO_FILENAME) }}
                                                             </a>
-                                                        </td> <!-- Assuming file_name is the title -->
+                                                        </td>
+
+                                                        <!-- Description -->
+                                                        <td>{{ $document->description ?? 'No short description' }}</td>
+
+                                                        <!-- Researchers -->
                                                         <td>{{ $document->researcher }}</td>
-                                                        <!-- Replace with the actual researchers data -->
-                                                        <td>{{ $document->file_category ?? 'No Category' }}</td>
+
+                                                        <!-- Date Submitted -->
                                                         <td>{{ $document->created_at->format('M d, Y') }}</td>
+
+                                                        <!-- Action Buttons -->
                                                         <td>
                                                             <div class="btn-group w-100">
                                                                 <!-- Edit Button -->
-                                                                <a href="#" class="btn btn-primary"
-                                                                    style="text-decoration: none; color: white;">
-                                                                    <i class="fas fa-pen"></i>
+                                                                <a href="{{ route('editFile', $document->id) }}"
+                                                                    class="btn btn-primary btn-sm">
+                                                                    <i class="fas fa-edit"></i>
                                                                 </a>
 
                                                                 <!-- Delete Button -->
@@ -86,11 +127,12 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                    </div> <!-- /.table-responsive -->
+                                </div> <!-- /.row -->
+                            </div> <!-- /.card-body -->
+                        </div> <!-- /.card -->
+                    </div> <!-- /.col-md-9 -->
+
                 </div>
             </div>
         </section>
@@ -125,3 +167,6 @@
         }
     }
 </script>
+
+
+@include('modal/addFile')

@@ -1,3 +1,4 @@
+<link rel="shortcut icon" type="" href="{{ asset('template/img/CPSU_L.png') }}">
 @extends('layouts.main')
 @section('body')
     <style type="text/css">
@@ -33,7 +34,7 @@
                     <div class="col-md-2">
                         <!-- Add User Button -->
                         <div class="container">
-                            <button class="btn bg-primary dropdown-item btn btn-default" data-toggle="modal"
+                            <button class="btn bg-success dropdown-item btn btn-default" data-toggle="modal"
                                 data-target="#modal-user">
                                 <i class="fa fa-plus"></i> Add User
                             </button>

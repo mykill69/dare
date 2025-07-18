@@ -18,7 +18,7 @@ class Document extends Model
         'folder_id',
         'file_name',
         'file_path',
-        'file_category',
+        'description',
         'researcher',
         'created_at',
         'download_count',

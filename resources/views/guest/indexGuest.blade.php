@@ -71,7 +71,7 @@
         .table th,
         .table td {
             vertical-align: middle !important;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .table a {
@@ -188,11 +188,10 @@
                                                         {{ pathinfo($result->file_name, PATHINFO_FILENAME) }}
                                                     </a>
                                                 </td>
+                                                <td>{{ $result->description ?? 'Uncategorized' }}</td>
                                                 <td>
-                                                    {{ optional($result->user)->fname ?? 'N/A' }}
-                                                    {{ optional($result->user)->lname ?? '' }}
+                                                    {{ $result->researcher }}
                                                 </td>
-                                                <td>{{ $result->file_category ?? 'Uncategorized' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}</td>
                                                 <td class="text-center">
                                                     <div class="dropdown">

@@ -57,7 +57,7 @@ public function storeFile(Request $request)
         'file_name' => 'required|file|mimes:pdf',
         'folder_id' => 'required|integer',
         'researcher' => 'required|string|max:255',
-        'file_category' => 'nullable|string|max:255',
+        'description' => 'required|string|max:255',
     ]);
 
     if ($request->hasFile('file_name')) {
@@ -77,7 +77,7 @@ public function storeFile(Request $request)
         $document->file_name = $fileName;
         $document->folder_id = $request->folder_id;
         $document->file_path = $filePath;
-        $document->file_category = $request->file_category;
+        $document->description = $request->description;
         $document->researcher = $request->researcher;
         $document->user_id = auth()->user()->id;
         $document->save();
@@ -87,6 +87,36 @@ public function storeFile(Request $request)
 
     return redirect()->back()->with('error', 'File upload failed.');
 }
+
+public function editFile($id)
+{
+    $editDocument = Document::findOrFail($id);
+    $folders = Folder::all(); // for the dropdown
+    $documents = Document::where('folder_id', $editDocument->folder_id)->get();
+    $folder = Folder::find($editDocument->folder_id);
+    $offices = Office::all();
+
+    return view('menu.documentView', compact('editDocument', 'folders', 'documents', 'folder', 'offices'));
+}
+
+
+public function updateFile(Request $request, $id)
+{
+    $request->validate([
+        'description' => 'required|string|max:255',
+        'researcher' => 'required|string|max:255',
+        'folder_id' => 'required|integer',
+    ]);
+
+    $document = Document::findOrFail($id);
+    $document->description = $request->description;
+    $document->researcher = $request->researcher;
+    $document->folder_id = $request->folder_id;
+    $document->save();
+
+    return redirect()->route('documentView', $document->folder_id)->with('success', 'Document updated successfully.');
+}
+
 
 
 public function viewPdf($file_name)
