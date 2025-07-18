@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Folder; // Assuming your folder model is named DocFolder
 use App\Models\Document;
 use App\Models\Office;
+use App\Models\Rating;
 
 class GuestController extends Controller
 {
@@ -13,23 +14,23 @@ class GuestController extends Controller
 {
     $query = $request->input('query');
     
-    // Total number of documents
     $docCount = Document::count();
-
-    // Total number of downloads
     $totalDownloads = Document::sum('download_count');
+    $totalViews = Document::sum('view_count');
 
-    // Document search logic
+    // Calculate average rating
+    $averageRating = Rating::avg('rating');
+    $averageRating = round($averageRating, 2); // optional rounding
+
     $searchResults = Document::with('folder');
 
     if ($query) {
         $searchResults = $searchResults->where('file_name', 'like', "%{$query}%");
     }
-    
+
     $searchResults = $searchResults->get();
 
-    // Pass both counts to the view
-    return view('guest.indexGuest', compact('searchResults', 'docCount', 'totalDownloads'));
+    return view('guest.indexGuest', compact('searchResults', 'docCount', 'totalDownloads', 'totalViews', 'averageRating'));
 }
 
 
@@ -61,6 +62,9 @@ class GuestController extends Controller
     if (!file_exists($filePath)) {
         return redirect()->back()->with('error', 'File not found on server.');
     }
+
+    // Increment the view count
+    $document->increment('view_count');
 
     return response()->file($filePath);
 }

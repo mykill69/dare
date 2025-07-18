@@ -7,6 +7,7 @@ use App\Http\Controllers\FoldersController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\RatingController;
 
 
 /*
@@ -36,6 +37,7 @@ Route::get('/searchGuest', [GuestController::class, 'searchGuest'])->name('searc
 Route::get('/guest/viewPdf/{file_name}', [GuestController::class, 'viewPdfGuest'])->name('viewPdfGuest');
 Route::get('/guest/downloadPdf/{file_name}', [GuestController::class, 'downloadPdfGuest'])->name('downloadPdfGuest');
 
+Route::post('/rate-document', [RatingController::class, 'rate'])->name('rateDocument');
 
 });
 

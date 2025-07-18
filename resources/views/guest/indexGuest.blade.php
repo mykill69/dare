@@ -175,27 +175,56 @@
                                             <th>Description</th>
                                             <th>Authors</th>
                                             <th>Date</th>
+                                            {{-- <th>Views</th> --}}
                                             <th>Action</th> {{-- This is your new column --}}
+
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($searchResults as $result)
                                             <tr>
+                                                @php
+                                                    $avgRating = round($result->ratings->avg('rating'), 1);
+                                                @endphp
+
                                                 <td>
-                                                    <i class="fas fa-file-pdf text-danger mr-1"></i>
                                                     <a href="{{ route('viewPdfGuest', ['file_name' => urlencode($result->file_name)]) }}"
                                                         target="_blank">
                                                         {{ pathinfo($result->file_name, PATHINFO_FILENAME) }}
                                                     </a>
+
+                                                    {{-- Star Display --}}
+                                                    <div class="rating" data-doc-id="{{ $result->id }}">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <i class="fa-star {{ $i <= $avgRating ? 'fas' : 'far' }} fa-lg text-warning"
+                                                                data-index="{{ $i }}"
+                                                                style="cursor:pointer;"></i>
+                                                        @endfor
+                                                        <small
+                                                            class="text-muted ms-1">({{ number_format($avgRating, 1) }}/5)</small>
+                                                    </div>
+
+                                                    {{-- Hidden Rating Form --}}
+                                                    <form id="rating-form-{{ $result->id }}"
+                                                        action="{{ route('rateDocument') }}" method="POST"
+                                                        style="display:none;">
+                                                        @csrf
+                                                        <input type="hidden" name="document_id"
+                                                            value="{{ $result->id }}">
+                                                        <input type="hidden" name="rating" class="rating-value">
+                                                    </form>
                                                 </td>
+
+
                                                 <td>{{ $result->description ?? 'Uncategorized' }}</td>
                                                 <td>
                                                     {{ $result->researcher }}
                                                 </td>
                                                 <td>{{ \Carbon\Carbon::parse($result->created_at)->format('F d, Y') }}</td>
+                                                {{-- <td>{{ $result->view_count }}</td> --}}
                                                 <td class="text-center">
                                                     <div class="dropdown">
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle"
+                                                        <button class="btn btn-sm btn-warning dropdown-toggle"
                                                             type="button" id="actionDropdown{{ $result->id }}"
                                                             data-toggle="dropdown" aria-haspopup="true"
                                                             aria-expanded="false">
@@ -211,7 +240,9 @@
                                                                 <i class="fas fa-eye text-info mr-2"></i> View
                                                             </a>
 
-                                                            <a class="dropdown-item" href="{{ route('downloadPdfGuest', ['file_name' => urlencode($result->file_name)]) }}" style="text-decoration: none;">
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('downloadPdfGuest', ['file_name' => urlencode($result->file_name)]) }}"
+                                                                style="text-decoration: none;">
                                                                 <i class="fas fa-download text-success mr-2"></i> Download
                                                             </a>
                                                         </div>
@@ -233,6 +264,67 @@
                     </div>
                 </div>
             </div>
+
+
+
+            <div class="row justify-content-center">
+                <div class="col-md-10 p-3">
+                    <div class="row justify-content-center rounded shadow-sm"
+                        style="background-color: rgba(14, 60, 17, 0.7);">
+
+                        <!-- Total Research -->
+                        <div class="col-md-3 col-sm-6 text-center">
+                            <h1 class="display-3 text-white font-weight-bold mb-1">
+                                <small>+</small>{{ $docCount }}
+                            </h1>
+                            <p class="text-warning font-weight-bold">Number of Research</p>
+                        </div>
+
+                        <!-- Total Views -->
+                        <div class="col-md-3 col-sm-6 text-center">
+                            <h1 class="display-3 text-white font-weight-bold mb-1">
+                                <small>+</small>{{ $totalViews }}
+                            </h1>
+                            <p class="text-warning font-weight-bold">Number of Views</p>
+                        </div>
+
+                        <!-- Total Downloads -->
+                        <div class="col-md-3 col-sm-6 text-center">
+                            <h1 class="display-3 text-white font-weight-bold mb-1">
+                                <small>+</small>{{ $totalDownloads }}
+                            </h1>
+                            <p class="text-warning font-weight-bold">Number of Downloads</p>
+                        </div>
+                        <!-- Average Rating -->
+                        <div class="col-md-3 col-sm-6 text-center">
+                            <h1 class="display-3 text-white font-weight-bold mb-1">
+                                {{ number_format($averageRating, 1) }}
+                            </h1>
+
+                            <div class="rating d-flex justify-content-center align-items-center mt-2">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($averageRating >= $i)
+                                        <i class="fas fa-star fa-1x text-warning" style="cursor: default;"></i>
+                                    @elseif($averageRating >= $i - 0.5)
+                                        <i class="fas fa-star-half-alt fa-1x text-warning" style="cursor: default;"></i>
+                                    @else
+                                        <i class="far fa-star fa-1x text-warning" style="cursor: default;"></i>
+                                    @endif
+                                @endfor
+                                <small class="text-light ms-2">&nbsp; (average rating)</small>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
 
             <div class="row justify-content-center">
                 <div class="col-md-10">
@@ -262,11 +354,16 @@
                             <div class="card card-hover h-100 text-white position-relative overflow-hidden"
                                 style="min-height: 320px;">
                                 <img src="{{ asset('template/img/digital_book2.jpg') }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.7);" alt="Research Count">
-                                <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
-                                    <h5 class="fw-bold text-warning">Total Number of Research</h5>
-                                    <p class="display-4 mb-0">{{ $docCount ?? 0 }}</p>
-                                </div>
+                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                <a href="#" target="_blank">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                        <h5 class="card-title text-warning">Most Viewed Research</h5>
+                                        <p class="card-text text-white pb-2 pt-1">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
+                                        </p>
+                                        <a href="#" class="text-white">Last update 2 mins ago</a>
+                                    </div>
+                                </a>
                             </div>
                         </div>
 
@@ -275,11 +372,16 @@
                             <div class="card card-hover h-100 text-white position-relative overflow-hidden"
                                 style="min-height: 320px;">
                                 <img src="{{ asset('template/img/download_number.jpg') }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.7);" alt="Download Icon">
-                                <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
-                                    <h5 class="fw-bold text-warning">Total Number of Downloads</h5>
-                                   <p class="display-4 mb-0">{{ $totalDownloads }}</p>
-                                </div>
+                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                <a href="#" target="_blank">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                        <h5 class="card-title text-warning">Most Downloaded Research</h5>
+                                        <p class="card-text text-white pb-2 pt-1">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
+                                        </p>
+                                        <a href="#" class="text-white">Last update 2 mins ago</a>
+                                    </div>
+                                </a>
                             </div>
                         </div>
 
@@ -328,4 +430,37 @@
             });
         });
     </script>
+
+    <script>
+        document.querySelectorAll('.rating').forEach(function(container) {
+            const stars = container.querySelectorAll('.fa-star');
+            const docId = container.getAttribute('data-doc-id');
+            const form = document.querySelector(`#rating-form-${docId}`);
+            const ratingInput = form.querySelector('.rating-value');
+
+            stars.forEach((star, index) => {
+                star.addEventListener('mouseover', () => {
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('fas', i <= index);
+                        s.classList.toggle('far', i > index);
+                    });
+                });
+
+                star.addEventListener('mouseout', () => {
+                    const avg = parseFloat(container.querySelector('small').innerText.split('/')[
+                        0]);
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('fas', i < avg);
+                        s.classList.toggle('far', i >= avg);
+                    });
+                });
+
+                star.addEventListener('click', () => {
+                    ratingInput.value = index + 1;
+                    form.submit();
+                });
+            });
+        });
+    </script>
+
 @endsection

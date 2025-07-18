@@ -31,4 +31,8 @@ public function folder()
 {
     return $this->belongsTo(Folder::class, 'folder_id');
 }
+public function ratings()
+{
+    return $this->hasMany(Rating::class);
+}
 }
