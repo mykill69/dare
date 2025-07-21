@@ -35,6 +35,13 @@
         background-color: rgba(40, 167, 69, 0.1); /* light green hover effect */
         transition: 0.3s;
     }
+
+    .small-footer {
+    padding: 5px 10px !important;
+    font-size: 13px;
+    background-color: #f9f9f9; /* optional: lighten the footer */
+    color: #555;
+}
 </style>
 
 <body class="hold-transition sidebar-collapse layout-footer-fixed">
@@ -96,9 +103,9 @@
             @yield('body') <!-- This will display the content from index.blade.php -->
         </div>
         <!-- Main footer -->
-        <footer class="main-footer">
-            <strong>Maintained and Managed by <a href="#">MIS</a>.</strong> All rights reserved.
-        </footer>
+        <footer class="main-footer small-footer">
+    <strong>Maintained and Managed by MIS.</strong> All rights reserved.
+</footer>
         <aside class="control-sidebar control-sidebar-dark">
         </aside>
     </div>

@@ -111,6 +111,78 @@
         .card-hover:hover img {
             transform: scale(1.05);
         }
+
+
+
+
+
+
+        .chatbot-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .thought-cloud {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            background: white;
+            color: #333;
+            padding: 8px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: scale(0.8);
+            animation: bubbleFade 4s infinite;
+            white-space: nowrap;
+        }
+
+        .thought-cloud::before,
+        .thought-cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .thought-cloud::before {
+            width: 10px;
+            height: 10px;
+            bottom: -10px;
+            right: 12px;
+        }
+
+        .thought-cloud::after {
+            width: 6px;
+            height: 6px;
+            bottom: -16px;
+            right: 16px;
+        }
+
+        @keyframes bubbleFade {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            40% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
     </style>
     <div class="content">
 
@@ -334,86 +406,180 @@
                         @php $cardImage = asset('template/img/sample_bg.jpg'); @endphp
 
                         <!-- Card 1 - Background Image Overlay -->
-                        <div class="col-md-3">
-                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
-                                style="min-height: 320px;">
-                                <img src="{{ $cardImage }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
-                                <a href="#" target="_blank">
-                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-warning">Featured Research</h5>
-                                        <p class="card-text text-white pb-2 pt-1">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
-                                        </p>
-                                        <a href="#" class="text-white">Last update 2 mins ago</a>
-                                    </div>
-                                </a>
+                        @if ($featuredResearch)
+                            <div class="col-md-3">
+                                <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                    style="min-height: 320px;">
+                                    <img src="{{ $cardImage }}" class="card-img h-100"
+                                        style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                    <a href="#" target="_blank">
+                                        <div class="card-img-overlay d-flex flex-column justify-content-end text-start">
+                                            <h1 class="card-title text-warning mb-1" style="font-size: 1.5rem;">Featured Research</h1>
+
+                                            <h6 class="text-white fw-bold mb-1" style="font-size: 1rem;">
+                                                {{ Str::beforeLast($featuredResearch->file_name, '.') }}
+                                            </h6>
+
+                                            <p class="card-text text-white mb-2">
+                                                {{ Str::limit($featuredResearch->description, 100) }}
+                                            </p>
+
+                                            <small class="text-white-50">
+                                                Last updated: {{ $featuredResearch->updated_at->diffForHumans() }}
+                                            </small>
+                                        </div>
+
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
+
 
                         <!-- Card 2 -->
-                        <div class="col-md-3">
-                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
-                                style="min-height: 320px;">
-                                <img src="{{ asset('template/img/digital_book2.jpg') }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
-                                <a href="#" target="_blank">
-                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-warning">Most Viewed Research</h5>
-                                        <p class="card-text text-white pb-2 pt-1">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
-                                        </p>
-                                        <a href="#" class="text-white">Last update 2 mins ago</a>
-                                    </div>
-                                </a>
+                        @if ($mostViewedResearch)
+                            <div class="col-md-3">
+                                <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                    style="min-height: 320px;">
+                                    <img src="{{ asset('template/img/digital_book2.jpg') }}" class="card-img h-100"
+                                        style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                    <a href="#" target="_blank">
+                                        <div class="card-img-overlay d-flex flex-column justify-content-end text-start">
+                                            <h1 class="card-title text-warning" style="font-size: 1.5rem;">Most Viewed Research</h1>
+
+                                            <h6 class="text-white fw-bold mb-1" style="font-size: 1rem;">
+                                                {{ Str::beforeLast($mostViewedResearch->file_name, '.') }}
+                                            </h6>
+
+                                            <p class="card-text text-white mb-2">
+                                                {{ Str::limit($mostViewedResearch->description, 100) }}
+                                            </p>
+
+                                            <small class="text-white-50">
+                                                Views: {{ $mostViewedResearch->view_count }} ·
+                                                Last updated: {{ $mostViewedResearch->updated_at->diffForHumans() }}
+                                            </small>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
+
 
                         <!-- Card 3 -->
-                        <div class="col-md-3">
-                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
-                                style="min-height: 320px;">
-                                <img src="{{ asset('template/img/download_number.jpg') }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
-                                <a href="#" target="_blank">
-                                    <div class="card-img-overlay d-flex flex-column justify-content-end">
-                                        <h5 class="card-title text-warning">Most Downloaded Research</h5>
-                                        <p class="card-text text-white pb-2 pt-1">
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.
-                                        </p>
-                                        <a href="#" class="text-white">Last update 2 mins ago</a>
-                                    </div>
-                                </a>
+                        @if ($mostDownloadedResearch)
+                            <div class="col-md-3">
+                                <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                                    style="min-height: 320px;">
+                                    <img src="{{ asset('template/img/download_number.jpg') }}" class="card-img h-100"
+                                        style="object-fit: cover; filter: brightness(0.7);" alt="Card image">
+                                    <a href="#" target="_blank">
+                                        <div class="card-img-overlay d-flex flex-column justify-content-end text-start">
+                                            <h1 class="card-title text-warning" style="font-size: 1.5rem;">Most Downloaded Research</h1>
+
+                                            <h6 class="text-white fw-bold mb-1" style="font-size: 1rem;">
+                                                {{ Str::beforeLast($mostDownloadedResearch->file_name, '.') }}
+                                            </h6>
+
+                                            <p class="card-text text-white mb-2">
+                                                {{ Str::limit($mostDownloadedResearch->description, 100) }}
+                                            </p>
+
+                                            <small class="text-white-50">
+                                                Downloads: {{ $mostDownloadedResearch->download_count }} ·
+                                                Last updated: {{ $mostDownloadedResearch->updated_at->diffForHumans() }}
+                                            </small>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
+
 
                         <!-- Card 4 -->
                         <div class="col-md-3">
-                            <div class="card card-hover h-100 text-white position-relative overflow-hidden"
+                            <div class="card card-hover h-100 position-relative overflow-hidden bg-dark text-white"
                                 style="min-height: 320px;">
-                                <img src="{{ asset('template/img/faqs.jpg') }}" class="card-img h-100"
-                                    style="object-fit: cover; filter: brightness(0.9);" alt="FAQ Icon">
-                                <a href="#" target="_blank">
-                                    <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
-                                        {{-- <h5 class="fw-bold"></h5>
-                                    <p class="small mb-3"></p>
-                                    <a href="#" class="btn btn-sm btn-outline-light">View FAQs</a> --}}
-                                    </div>
-                                </a>
+
+
+                                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                    <h1 class="text-warning">Related Studies</h1>
+                                    <table class="table table-borderless text-white">
+                                        <tbody>
+                                            <tr>
+                                                <td>Lorem ipsum dolor sit amet</td>
+                                            </tr>
+                                            <tr>
+                                                <td>John Doe</td>
+                                            </tr>
+                                            <tr>
+                                                <td>John Doe</td>
+                                            </tr>
+                                            <tr>
+                                                <td>1,234</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
 
                 </div>
             </div>
 
 
+            <!-- Chatbot Trigger Button with Thought Cloud -->
+            <div style="position: fixed; bottom: 30px; right: 30px; z-index: 9999;">
+                <button type="button" class="btn p-0 border-0" style="background: transparent;" data-toggle="modal"
+                    data-target="#chatbotModal">
+                    <div class="chatbot-container position-relative">
+                        <img src="{{ asset('template/img/chat_kalaw.png') }}" alt="Chat Icon"
+                            style="width: 60px; height: 100px;" class="rounded-circle shadow-lg">
+                        <div class="thought-cloud">View FAQs</div>
+                    </div>
+                </button>
+            </div>
+
+
+
+
+            <!-- Chatbot Modal -->
+            <div class="modal fade" id="chatbotModal" tabindex="-1" role="dialog" aria-labelledby="chatbotModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="chatbotModalLabel">CPSU Chat Assistant</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="height: 400px; overflow-y: auto;">
+                            <p class="text-muted text-center">Hello! How can I help you today?</p>
+                            <!-- Add your chatbot iframe, widget, or static content here -->
+                            <div class="alert alert-light">
+                                <strong>Tip:</strong> This is a placeholder for chatbot UI. Integrate your bot (e.g.,
+                                Dialogflow, Botpress, or manual script).
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="text" class="form-control" placeholder="Type your message..." />
+                            <button type="button" class="btn btn-success">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 
         </div>
 
+
     </div>
+
+
 
     <script>
         $(document).ready(function() {

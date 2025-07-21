@@ -7,20 +7,38 @@ use App\Models\Folder; // Assuming your folder model is named DocFolder
 use App\Models\Document;
 use App\Models\Office;
 use App\Models\Rating;
+use Illuminate\Support\Facades\DB;
 
 class GuestController extends Controller
 {
-    public function indexGuest(Request $request)
+
+public function indexGuest(Request $request)
 {
     $query = $request->input('query');
-    
+
     $docCount = Document::count();
     $totalDownloads = Document::sum('download_count');
     $totalViews = Document::sum('view_count');
-
-    // Calculate average rating
     $averageRating = Rating::avg('rating');
-    $averageRating = round($averageRating, 2); // optional rounding
+    $averageRating = round($averageRating, 2);
+    $mostViewedResearch = Document::orderByDesc('view_count')->first();
+    $mostDownloadedResearch = Document::orderByDesc('download_count')->first();
+
+    // Get top rated document based on average rating
+    $topRated = Rating::select('document_id', DB::raw('AVG(rating) as avg_rating'))
+        ->groupBy('document_id')
+        ->orderByDesc('avg_rating')
+        ->first();
+
+    $featuredResearch = null;
+
+    if ($topRated) {
+        $document = Document::find($topRated->document_id); // Make sure this returns a record
+        if ($document) {
+            $document->avg_rating = round($topRated->avg_rating, 2);
+            $featuredResearch = $document;
+        }
+    }
 
     $searchResults = Document::with('folder');
 
@@ -30,8 +48,19 @@ class GuestController extends Controller
 
     $searchResults = $searchResults->get();
 
-    return view('guest.indexGuest', compact('searchResults', 'docCount', 'totalDownloads', 'totalViews', 'averageRating'));
+    return view('guest.indexGuest', compact(
+        'searchResults',
+        'docCount',
+        'totalDownloads',
+        'totalViews',
+        'averageRating',
+        'featuredResearch',
+        'mostViewedResearch',
+        'mostDownloadedResearch'
+    ));
 }
+
+
 
 
     public function searchGuest(Request $request)

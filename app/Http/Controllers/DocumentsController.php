@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Folder; 
 use App\Models\Document;
 use App\Models\Office;
+use App\Models\Rating;
 
 class DocumentsController extends Controller
 {
@@ -24,8 +25,14 @@ class DocumentsController extends Controller
         ->get();
         }
 
+
+$averageRating = Rating::avg('rating');
+    $averageRating = round($averageRating, 2); // optional rounding
+        $docCount = Document::count();
+    $totalDownloads = Document::sum('download_count');
+    $totalViews = Document::sum('view_count');
         // Return the view with the search results (if any)
-        return view('menu.index', compact('searchResults'));
+        return view('menu.index', compact('searchResults', 'docCount', 'totalDownloads', 'totalViews', 'averageRating'));
     }
 
     public function search(Request $request)
