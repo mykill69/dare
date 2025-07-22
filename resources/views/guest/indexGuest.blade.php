@@ -286,8 +286,6 @@
                                                         <input type="hidden" name="rating" class="rating-value">
                                                     </form>
                                                 </td>
-
-
                                                 <td>{{ $result->description ?? 'Uncategorized' }}</td>
                                                 <td class="text-center">
                                                     {{ $result->researcher }}

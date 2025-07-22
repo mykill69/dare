@@ -16,35 +16,32 @@ class LoginAuth
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {
-       if(Auth::guard('web')->check()){
-            if(!Auth::user()->role){
-                return redirect()->route('getLogin')->with('error','You have to be admin user to access this page');
-            }
-            // if(Auth::user()->hasRole('Administrator')){
-            //     if ($request->is('users') || $request->is('users/*')) {
-            //         return redirect()->route('dashboard')->with('error1', 'You do not have permission to access this page');
-            //     }
-            // }
-            if(Auth::user()->hasRole('staffs')) {
-                if ($request->is('users', 'office') || $request->is('users/*', 'office/*')) {
-                    return redirect()->route('folders')->with('error1', 'You do not have permission to access this page');
-                }
-            }
-        }else{
-            return redirect()->route('getLogin')->with('error','You have to Sign In first to access this page');
+{
+    if (Auth::guard('web')->check()) {
+        $user = Auth::user();
+
+        if (!$user->role) {
+            return redirect()->route('getLogin')->with('error', 'You have to be an admin user to access this page');
         }
-        // return $next($request)->header('Cache-Control','no-cache, no-store, max-age=0, must-revalidate')
-        //                       ->header('Pragma','no-cache')
-        //                       ->header('Expires','Sat 01 Jan 1990 00:00:00 GMT');
 
-        $response = $next($request);
+        // Example: restrict 'staffs' from accessing 'users' or 'office'
+        if ($user->role==('staffs')) {
+            if ($request->is('users') || $request->is('office') || $request->is('users/*') || $request->is('office/*')) {
+                return redirect()->route('folders')->with('error1', 'You do not have permission to access this page');
+            }
+        }
 
-        // Prevent caching for sensitive pages
-        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-        $response->headers->set('Pragma', 'no-cache');
-        $response->headers->set('Expires', '0');
-
-        return $response;
+    } else {
+        return redirect()->route('getLogin')->with('error', 'You have to Sign In first to access this page');
     }
+
+    // Cache prevention
+    $response = $next($request);
+    $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+    $response->headers->set('Pragma', 'no-cache');
+    $response->headers->set('Expires', '0');
+
+    return $response;
+}
+
 }
